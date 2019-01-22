@@ -63,17 +63,15 @@ class CreateExtensionCommand extends MWStewBaseCommand {
 			)
 			->addOption(
 				'js',
-				'js',
-				InputOption::VALUE_OPTIONAL,
-				'Add files for a JavaScript development environment',
-				false
+				null,
+				InputOption::VALUE_NONE,
+				'Add files for a JavaScript development environment'
 			)
 			->addOption(
 				'php',
-				'php',
-				InputOption::VALUE_OPTIONAL,
-				'Add files for a PHP development environment',
-				false
+				null,
+				InputOption::VALUE_NONE,
+				'Add files for a PHP development environment'
 			)
 			->addOption(
 				'specialname',
