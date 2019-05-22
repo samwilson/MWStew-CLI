@@ -1,6 +1,6 @@
 language: php
 
-php: 7.2
+php: "7.2"
 
 before_install:
   - composer install
@@ -11,8 +11,7 @@ before_script:
 
 script:
   - composer validate
-  - phpunit --coverage-clover ./build/logs/phpunit_clover.xml --configuration tests/phpunit.xml
-  - ./vendor/bin/minus-x check .
+  - composer test
 
 # after_script:
 # - php vendor/bin/coveralls -v

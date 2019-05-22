@@ -28,6 +28,7 @@ $application = new Symfony\Component\Console\Application;
 // Add commands
 $application->add( new MWStew\CLI\CreateExtensionCommand() );
 $application->add( new MWStew\CLI\ListHooksCommand() );
+$application->add( new MWStew\CLI\CloneExtensionCommand() );
 
 // Run the application
 $application->run();

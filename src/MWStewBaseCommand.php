@@ -2,15 +2,17 @@
 
 namespace MWStew\CLI;
 
+use Exception;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 
 class MWStewBaseCommand extends Command {
 	protected $styles = [];
+
+	/** @var string Full filesystem path to the extensions directory. */
+	protected static $extensionsDir;
 
 	public function __construct( string $name = null ) {
 		parent::__construct( $name );
@@ -85,4 +87,50 @@ class MWStewBaseCommand extends Command {
 		return $ascii;
 	}
 
+	/**
+	 * Get the full filesystem path to the extensions directory, first looking down a level from the current working
+	 * directory, and then stepping up through the directories to see if it exists.
+	 * @return string
+	 * @throws Exception If no extensions directory can be determined.
+	 */
+	protected function getExtensionsDir()
+	{
+		if (static::$extensionsDir) {
+			return static::$extensionsDir;
+		}
+
+		$cwd = getcwd();
+
+		// Look down one level.
+		if (is_dir("$cwd/extensions")) {
+			$extDir = "$cwd/extensions";
+
+		} else {
+			// Iterate upwards, checking two things at each step.
+			$dir = $cwd;
+			do {
+				// Drop the last component of the path.
+				$dir = substr($dir, 0, strrpos($dir, '/'));
+				// See if it's an extensions directory.
+				if (basename($dir) === 'extensions') {
+					$extDir = $dir;
+					break;
+				}
+				// See if there's an extensions directory in it.
+				if (is_dir("$dir/extensions")) {
+					$extDir = "$dir/extensions";
+					break;
+				}
+			} while ($dir);
+		}
+
+		// Complain if nothing was found.
+		if (!isset($extDir)) {
+			throw new Exception("Unable to find extensions directory from $cwd");
+		}
+
+		// Return the full path to the extensions directory.
+		static::$extensionsDir = realpath($extDir);
+		return static::$extensionsDir;
+	}
 }
